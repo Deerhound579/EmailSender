@@ -3,10 +3,8 @@
 
 '''
 Helper functions to read contatcs' information and the template file.
+The idea is from a tutorial by freeCodeCamp.
 '''
-
-__author__ = 'Sixian Li'
-__date__ = '2018-12-20'
 
 from string import Template
 
