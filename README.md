@@ -2,6 +2,9 @@
 
 An email sender which sends the same email to all recipients, replacing the title with each person's name.
 
+### A demo:
+![DEMO](https://github.com/Deerhound579/EmailSender/blob/master/demo.gif)
+
 ---
 ### My motivation
 
