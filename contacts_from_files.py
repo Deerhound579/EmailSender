@@ -15,7 +15,7 @@ def get_contacts(filename):
         # Read each line in a CSV file
         for a_contact in contact_file:
             names.append(a_contact.split(',')[0])
-            emails.append(a_contact.split(',')[1])
+            emails.append((a_contact.split(',')[1]).strip())
     return names, emails
 
 # Create a template object from a template file

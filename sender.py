@@ -18,20 +18,16 @@ import contacts_from_files as cf
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
-# TODO Check argparse tutorial and improve this checker
-# try:
-#     contacts, template, server, sender, receiver = sys.argv[1:]
-# except IndexError as e:
-#     print("You need at least 5 arguments.", e)
+#TODO Check retry library to make this program clearer
 
 
 parser = argparse.ArgumentParser()
-# parser.add_argument('contacts', help='List of your contacts.')
+parser.add_argument('contacts', help='List of your contacts. A CSV file.')
 parser.add_argument('template', help='The template for all emails.')
 args = parser.parse_args()
-template = cf.get_template(args.template)
 
-names, emails = cf.get_contacts('contacts.csv')
+template = cf.get_template(args.template)
+names, emails = cf.get_contacts(args.contacts)
 # template = cf.get_template(template) # A template object
 
 # Set up the connection
@@ -42,10 +38,18 @@ server_list = {
                'yahoo': 'smtp.mail.yahoo.com'
                }
 
-print('Please select your email service provider from below: ', list(server_list.keys()))
-server = server_list.get(input().lower())
-
-smtpObj = smtplib.SMTP(server, 587)
+while True:
+    print('Please select your email service provider from below: ', list(server_list.keys()))
+    server = server_list.get(input().lower(), None) # Default value
+    if server:
+        smtpObj = smtplib.SMTP(server, 587)
+        break   
+    else:
+        print('Invalid input. Please enter \'t\' to try again or \'q\' to end the program.')
+        if input()=='t':
+            continue
+        else:
+            quit()
 
 while True:
     return_code = smtpObj.ehlo()[0]
@@ -78,13 +82,13 @@ while True: # Check until the password is correct
             continue
     break       
 
-
+print('Subject line:')
+subject_line = input()
 # Send an Email
 for name, email in zip(names, emails):
     # Initialize the message
     message = MIMEMultipart()
-    print('Subject line:')
-    message['Subject'] = input()
+    message['Subject'] = subject_line
     message['From'] = sender
     message['To'] = email
 
@@ -93,9 +97,10 @@ for name, email in zip(names, emails):
     # Content part of an email
     message.attach(MIMEText(msg_content, 'plain'))
     try:
-        smtpObj.send_message(message)
+        smtpObj.send_message(message) 
     except smtplib.SMTPException as e:
-        print('An error occurred', e)
+        print('An error occurred.', e)
+        quit()
 
 print('Emails sent successfully.')
 smtpObj.quit()
