@@ -1,5 +1,4 @@
-# EmailSender
-
+# email-sender
 An email sender which sends the same email to all recipients, replacing the title with each person's name.
 
 ### A demo:
